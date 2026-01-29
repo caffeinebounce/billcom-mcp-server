@@ -52,6 +52,7 @@ export interface Bill {
   amount: string;
   amountDue: string;
   paymentStatus: string;
+  approvalStatus?: string;  // 0=Unassigned, 1=Pending, 2=Approving, 3=Approved, 4=Denied
   description?: string;
   poNumber?: string;
   createdTime: string;
@@ -145,7 +146,8 @@ export interface SearchParams {
 
 export interface SearchFilter {
   field: string;
-  op: 'eq' | 'ne' | 'lt' | 'le' | 'gt' | 'ge' | 'in' | 'nin' | 'sw' | 'ew' | 'ct';
+  // Bill.com uses symbolic operators: =, <, >, <=, >=, !=, in, nin, sw
+  op: '=' | '<' | '>' | '<=' | '>=' | '!=' | 'in' | 'nin' | 'sw' | 'eq' | 'ne' | 'lt' | 'le' | 'gt' | 'ge' | 'ew' | 'ct';
   value: string | string[];
 }
 

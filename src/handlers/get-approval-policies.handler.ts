@@ -19,7 +19,10 @@ export async function getApprovalPolicies(): Promise<ToolResponse<ApprovalPolicy
   try {
     const response = await billcomClient.request<ApprovalPolicy[]>(
       'List/ApprovalPolicy',
-      {}
+      {
+        start: 0,
+        max: 999
+      }
     );
 
     return {
