@@ -42,12 +42,12 @@ describe('Approval Handlers', () => {
       expect(result.error).toBeNull();
     });
 
-    it('should call List/ApprovalPolicy endpoint', async () => {
+    it('should call List/ApprovalPolicy endpoint with pagination', async () => {
       (billcomClient.request as ReturnType<typeof vi.fn>).mockResolvedValueOnce([]);
 
       await getApprovalPolicies();
 
-      expect(billcomClient.request).toHaveBeenCalledWith('List/ApprovalPolicy', {});
+      expect(billcomClient.request).toHaveBeenCalledWith('List/ApprovalPolicy', { start: 0, max: 999 });
     });
 
     it('should handle API errors', async () => {
@@ -87,11 +87,11 @@ describe('Approval Handlers', () => {
 
   describe('getPendingApprovals', () => {
     it('should get pending approvals successfully', async () => {
-      const mockApprovals = [
-        createMockApproval({ id: 'apr_1', objectId: 'bill_1', status: '1' }),
-        createMockApproval({ id: 'apr_2', objectId: 'bill_2', status: '1' }),
+      const mockBills = [
+        { id: 'bill_1', vendorId: 'v1', amount: '100.00', dueDate: '2026-02-01', approvalStatus: '1', createdTime: '2026-01-01' },
+        { id: 'bill_2', vendorId: 'v2', amount: '200.00', dueDate: '2026-02-02', approvalStatus: '1', createdTime: '2026-01-02' },
       ];
-      (billcomClient.request as ReturnType<typeof vi.fn>).mockResolvedValueOnce(mockApprovals);
+      (billcomClient.request as ReturnType<typeof vi.fn>).mockResolvedValueOnce(mockBills);
 
       const result = await getPendingApprovals();
 
@@ -100,27 +100,14 @@ describe('Approval Handlers', () => {
       expect(result.error).toBeNull();
     });
 
-    it('should filter by pending status', async () => {
+    it('should filter by approvalStatus using List/Bill endpoint', async () => {
       (billcomClient.request as ReturnType<typeof vi.fn>).mockResolvedValueOnce([]);
 
       await getPendingApprovals();
 
-      expect(billcomClient.request).toHaveBeenCalledWith('List/Approval', expect.objectContaining({
+      expect(billcomClient.request).toHaveBeenCalledWith('List/Bill', expect.objectContaining({
         filters: expect.arrayContaining([
-          { field: 'status', op: 'eq', value: '1' },
-        ]),
-      }));
-    });
-
-    it('should filter by object type when provided', async () => {
-      (billcomClient.request as ReturnType<typeof vi.fn>).mockResolvedValueOnce([]);
-
-      await getPendingApprovals({ objectType: 'Bill' });
-
-      expect(billcomClient.request).toHaveBeenCalledWith('List/Approval', expect.objectContaining({
-        filters: expect.arrayContaining([
-          { field: 'status', op: 'eq', value: '1' },
-          { field: 'objectType', op: 'eq', value: 'Bill' },
+          { field: 'approvalStatus', op: '=', value: '1' },
         ]),
       }));
     });
@@ -130,7 +117,7 @@ describe('Approval Handlers', () => {
 
       await getPendingApprovals({ start: 0, max: 50 });
 
-      expect(billcomClient.request).toHaveBeenCalledWith('List/Approval', expect.objectContaining({
+      expect(billcomClient.request).toHaveBeenCalledWith('List/Bill', expect.objectContaining({
         start: 0,
         max: 50,
       }));
@@ -154,6 +141,25 @@ describe('Approval Handlers', () => {
 
       expect(result.isError).toBe(false);
       expect(result.result).toEqual([]);
+    });
+
+    it('should transform bills to pending approval items', async () => {
+      const mockBills = [
+        { id: 'bill_1', vendorId: 'v1', amount: '150.00', dueDate: '2026-02-01', approvalStatus: '1', invoiceNumber: 'INV-001', createdTime: '2026-01-01' },
+      ];
+      (billcomClient.request as ReturnType<typeof vi.fn>).mockResolvedValueOnce(mockBills);
+
+      const result = await getPendingApprovals();
+
+      expect(result.result?.[0]).toMatchObject({
+        id: 'bill_1',
+        entity: 'Bill',
+        vendorId: 'v1',
+        amount: 150,
+        dueDate: '2026-02-01',
+        invoiceNumber: 'INV-001',
+        approvalStatus: 'Pending',
+      });
     });
   });
 

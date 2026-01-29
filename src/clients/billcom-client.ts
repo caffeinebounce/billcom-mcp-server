@@ -154,13 +154,26 @@ class BillcomClient {
       throw new Error(`Bill.com API error: ${response.status} ${errorText}`);
     }
 
-    const result = await response.json() as BillcomResponse<T>;
+    const result = await response.json() as BillcomResponse<T> & { 
+      response_data?: { error_message?: string; error_code?: string } | T 
+    };
 
     if (result.response_status !== 0) {
-      throw new Error(`Bill.com API error: ${result.response_message}`);
+      // Try to extract more detailed error info from response_data
+      let errorDetail = result.response_message;
+      if (result.response_data && typeof result.response_data === 'object') {
+        const data = result.response_data as Record<string, unknown>;
+        if (data.error_message) {
+          errorDetail = `${errorDetail}: ${data.error_message}`;
+        }
+        if (data.error_code) {
+          errorDetail = `[${data.error_code}] ${errorDetail}`;
+        }
+      }
+      throw new Error(`Bill.com API error: ${errorDetail}`);
     }
 
-    return result.response_data;
+    return result.response_data as T;
   }
 
   /**
