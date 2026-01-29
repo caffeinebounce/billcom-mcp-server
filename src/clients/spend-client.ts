@@ -8,7 +8,7 @@ const environment = process.env.BILLCOM_ENVIRONMENT || 'sandbox';
 
 // v3 Spend & Expense API Base URLs
 const SPEND_BASE_URLS = {
-  production: 'https://gateway.bill.com/connect/v3/spend',
+  production: 'https://gateway.prod.bill.com/connect/v3/spend',
   sandbox: 'https://gateway.stage.bill.com/connect/v3/spend'
 } as const;
 
@@ -19,6 +19,7 @@ const SPEND_BASE_URLS = {
 export interface SpendApiResponse<T> {
   data?: T;
   items?: T[];  // For list endpoints
+  results?: T[];  // For list endpoints (v3 format)
   pagination?: {
     cursor?: string;
     hasMore?: boolean;
@@ -120,12 +121,15 @@ class SpendClient {
       throw new Error(`Spend API error: ${result.error.message}`);
     }
 
-    // Return data or items depending on response structure
+    // Return data or items/results depending on response structure
     if (result.data !== undefined) {
       return result.data;
     }
     if (result.items !== undefined) {
       return result.items as T;
+    }
+    if (result.results !== undefined) {
+      return result.results as T;
     }
     
     // For responses that return data directly

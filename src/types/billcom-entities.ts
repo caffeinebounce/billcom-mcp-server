@@ -146,7 +146,8 @@ export interface SearchParams {
 
 export interface SearchFilter {
   field: string;
-  op: 'eq' | 'ne' | 'lt' | 'le' | 'gt' | 'ge' | 'in' | 'nin' | 'sw' | 'ew' | 'ct';
+  // Bill.com uses symbolic operators: =, <, >, <=, >=, !=, in, nin, sw
+  op: '=' | '<' | '>' | '<=' | '>=' | '!=' | 'in' | 'nin' | 'sw' | 'eq' | 'ne' | 'lt' | 'le' | 'gt' | 'ge' | 'ew' | 'ct';
   value: string | string[];
 }
 
