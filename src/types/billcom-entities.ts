@@ -52,6 +52,7 @@ export interface Bill {
   amount: string;
   amountDue: string;
   paymentStatus: string;
+  approvalStatus?: string;  // 0=Unassigned, 1=Pending, 2=Approving, 3=Approved, 4=Denied
   description?: string;
   poNumber?: string;
   createdTime: string;
@@ -161,4 +162,95 @@ export interface SessionInfo {
   userId: string;
   devKey: string;
   expiresAt: Date;
+}
+
+// =============================================================================
+// V3 API Types (Bill Approvals)
+// =============================================================================
+
+/**
+ * V3 Approval Policy - Full approval workflow configuration
+ */
+export interface V3ApprovalPolicy {
+  id: string;
+  name: string;
+  description?: string;
+  isActive: boolean;
+  approvalType: 'Bill' | 'VendorCredit' | 'Payment';
+  rules: V3ApprovalRule[];
+  createdTime: string;
+  updatedTime: string;
+}
+
+export interface V3ApprovalRule {
+  id: string;
+  name: string;
+  condition?: {
+    field: string;
+    operator: string;
+    value: string | number;
+  };
+  approvers: V3Approver[];
+  sequence: number;
+}
+
+export interface V3Approver {
+  userId: string;
+  userName?: string;
+  email?: string;
+  role?: string;
+}
+
+/**
+ * V3 Pending User Approval - Bill awaiting user's approval action
+ */
+export interface V3PendingUserApproval {
+  id: string;
+  billId: string;
+  vendorId: string;
+  vendorName?: string;
+  invoiceNumber?: string;
+  invoiceDate: string;
+  dueDate: string;
+  amount: string;
+  currency?: string;
+  description?: string;
+  approvalPolicyId: string;
+  approvalPolicyName?: string;
+  currentApprovalStep: number;
+  totalApprovalSteps: number;
+  submittedBy?: string;
+  submittedTime: string;
+  approvalStatus: 'pending' | 'approved' | 'denied';
+}
+
+/**
+ * V3 Approval Action - Approve or deny a bill
+ */
+export interface V3ApprovalAction {
+  billId: string;
+  action: 'approve' | 'deny';
+  comment?: string;
+}
+
+export interface V3ApprovalActionResult {
+  billId: string;
+  action: 'approve' | 'deny';
+  success: boolean;
+  newStatus?: string;
+  message?: string;
+}
+
+/**
+ * V3 Approval History Entry
+ */
+export interface V3ApprovalHistoryEntry {
+  id: string;
+  billId: string;
+  action: 'approve' | 'deny' | 'submit' | 'recall';
+  userId: string;
+  userName?: string;
+  comment?: string;
+  timestamp: string;
+  approvalStep: number;
 }

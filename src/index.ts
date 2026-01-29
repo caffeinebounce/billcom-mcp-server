@@ -38,12 +38,18 @@ import { CreateRecurringBillTool } from "./tools/create-recurring-bill.tool.js";
 import { UpdateRecurringBillTool } from "./tools/update-recurring-bill.tool.js";
 import { ArchiveRecurringBillTool } from "./tools/archive-recurring-bill.tool.js";
 
-// Approval tools
+// Approval tools (v2)
 import { GetApprovalPoliciesTool } from "./tools/get-approval-policies.tool.js";
 import { GetPendingApprovalsTool } from "./tools/get-pending-approvals.tool.js";
 import { ApproveBillTool } from "./tools/approve-bill.tool.js";
 import { RejectBillTool } from "./tools/reject-bill.tool.js";
 import { GetApprovalHistoryTool } from "./tools/get-approval-history.tool.js";
+
+// Approval tools (v3) - preferred for approval workflows
+import { GetApprovalPoliciesV3Tool } from "./tools/get-approval-policies-v3.tool.js";
+import { GetPendingApprovalsV3Tool } from "./tools/get-pending-approvals-v3.tool.js";
+import { ApproveBillV3Tool } from "./tools/approve-bill-v3.tool.js";
+import { DenyBillV3Tool } from "./tools/deny-bill-v3.tool.js";
 
 // Budget tools
 import { SearchBudgetsTool } from "./tools/search-budgets.tool.js";
@@ -106,12 +112,18 @@ const main = async () => {
   RegisterTool(server, UpdateRecurringBillTool);
   RegisterTool(server, ArchiveRecurringBillTool);
 
-  // Register Approval tools
+  // Register Approval tools (v2)
   RegisterTool(server, GetApprovalPoliciesTool);
   RegisterTool(server, GetPendingApprovalsTool);
   RegisterTool(server, ApproveBillTool);
   RegisterTool(server, RejectBillTool);
   RegisterTool(server, GetApprovalHistoryTool);
+
+  // Register Approval tools (v3) - preferred for approval workflows
+  RegisterTool(server, GetApprovalPoliciesV3Tool);
+  RegisterTool(server, GetPendingApprovalsV3Tool);
+  RegisterTool(server, ApproveBillV3Tool);
+  RegisterTool(server, DenyBillV3Tool);
 
   // Register Budget tools
   RegisterTool(server, SearchBudgetsTool);
