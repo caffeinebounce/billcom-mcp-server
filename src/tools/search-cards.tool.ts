@@ -11,6 +11,7 @@ const toolSchema = z.object({
   cardType: z.string().optional().describe("Filter by card type ('physical' or 'virtual')"),
   status: z.string().optional().describe("Filter by card status"),
   userId: z.string().optional().describe("Filter by user ID"),
+  name: z.string().optional().describe("Filter by card name (case-insensitive partial match)"),
 });
 
 export const SearchCardsTool: ToolDefinition<typeof toolSchema> = {

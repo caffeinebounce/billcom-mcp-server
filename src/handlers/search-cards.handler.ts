@@ -5,6 +5,7 @@ import { formatError } from "../helpers/format-error.js";
 export interface Card {
   uuid: string;
   id?: string;  // Legacy field mapping
+  name?: string;  // Card name (e.g., "Capital Collective - Doug")
   isActive: string;
   cardType: string;  // 'physical' or 'virtual'
   lastFour: string;
@@ -26,6 +27,8 @@ interface SearchCardsParams {
   cardType?: string;
   status?: string;
   userId?: string;
+  // Client-side filtering (not supported by API)
+  name?: string;
 }
 
 /**
@@ -47,10 +50,18 @@ export async function searchCards(
     const response = await spendClient.get<Card[]>('cards', queryParams);
 
     // Map uuid to id for backwards compatibility
-    const cards = (response || []).map(c => ({
+    let cards = (response || []).map(c => ({
       ...c,
       id: c.uuid || c.id,
     }));
+
+    // Client-side filtering by name (API doesn't support this)
+    if (params.name) {
+      const nameFilter = params.name.toLowerCase();
+      cards = cards.filter(c => 
+        c.name?.toLowerCase().includes(nameFilter)
+      );
+    }
 
     return {
       result: cards,
