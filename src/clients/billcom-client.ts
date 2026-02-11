@@ -1,8 +1,14 @@
 import dotenv from "dotenv";
 import { formatError } from "../helpers/format-error.js";
 import { SessionInfo, BillcomResponse } from "../types/billcom-entities.js";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Load .env from project root (three levels up from dist/src/clients/)
+dotenv.config({ path: join(__dirname, '../../../.env') });
 
 const username = process.env.BILLCOM_USERNAME;
 const password = process.env.BILLCOM_PASSWORD;

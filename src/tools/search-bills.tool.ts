@@ -50,12 +50,8 @@ export const SearchBillsTool: ToolDefinition<typeof toolSchema> = {
       content: [
         {
           type: "text" as const,
-          text: `Found ${bills.length} bill(s):`,
+          text: JSON.stringify(bills, null, 2),
         },
-        ...bills.map((b) => ({
-          type: "text" as const,
-          text: JSON.stringify(b, null, 2),
-        })),
       ],
     };
   },
