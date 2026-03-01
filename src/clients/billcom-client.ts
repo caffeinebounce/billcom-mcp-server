@@ -29,6 +29,12 @@ const BASE_URLS = {
   sandbox: 'https://api-sandbox.bill.com/api/v2'
 } as const;
 
+export interface BillcomAuthContext {
+  baseUrl: string;
+  devKey: string;
+  sessionId: string;
+}
+
 class BillcomClient {
   private readonly username: string;
   private readonly password: string;
@@ -180,6 +186,19 @@ class BillcomClient {
     }
 
     return result.response_data as T;
+  }
+
+  /**
+   * Get authenticated API context for custom requests (e.g., multipart uploads)
+   */
+  async getAuthContext(): Promise<BillcomAuthContext> {
+    await this.authenticate();
+
+    return {
+      baseUrl: this.baseUrl,
+      devKey: this.devKey,
+      sessionId: this.sessionId!,
+    };
   }
 
   /**

@@ -78,6 +78,21 @@ export interface BillLineItem {
   employeeId?: string;
 }
 
+
+// Document entity
+export interface Document {
+  id: string;
+  isActive?: string;
+  name?: string;
+  fileName?: string;
+  contentType?: string;
+  size?: string;
+  folderId?: string;
+  description?: string;
+  createdTime?: string;
+  updatedTime?: string;
+}
+
 // Bill Payment entity
 export interface BillPayment {
   id: string;
