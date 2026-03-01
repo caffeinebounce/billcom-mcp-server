@@ -8,9 +8,6 @@ const toolDescription = "Upload a file to the Bill.com document library.";
 const toolSchema = z.object({
   filePath: z.string().describe("Absolute or relative path to the file to upload"),
   fileName: z.string().optional().describe("Optional filename override for Bill.com"),
-  folderId: z.string().optional().describe("Optional destination document folder ID"),
-  description: z.string().optional().describe("Optional document description"),
-  mimeType: z.string().optional().describe("Optional MIME type (e.g., application/pdf)"),
 });
 
 export const UploadDocumentTool: ToolDefinition<typeof toolSchema> = {

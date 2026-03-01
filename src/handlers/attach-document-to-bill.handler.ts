@@ -1,32 +1,32 @@
 import { billcomClient } from "../clients/billcom-client.js";
 import { ToolResponse } from "../types/tool-response.js";
 import { formatError } from "../helpers/format-error.js";
-import { Bill } from "../types/billcom-entities.js";
 
 export interface AttachDocumentToBillParams {
   billId: string;
   documentId: string;
 }
 
+interface Attachment {
+  id: string;
+  entity: "Attachment";
+  objectId: string;
+  documentId: string;
+}
+
 /**
  * Attach an existing Bill.com document to a bill.
- *
- * Assumption: Bill update accepts a `document` object and/or `documentId` field.
  */
 export async function attachDocumentToBill(
   params: AttachDocumentToBillParams
-): Promise<ToolResponse<Bill>> {
+): Promise<ToolResponse<Attachment>> {
   try {
-    const response = await billcomClient.request<Bill>(
-      "Crud/Update/Bill",
+    const response = await billcomClient.request<Attachment>(
+      "Crud/Create/Attachment",
       {
         obj: {
-          entity: "Bill",
-          id: params.billId,
-          document: {
-            entity: "Document",
-            id: params.documentId,
-          },
+          entity: "Attachment",
+          objectId: params.billId,
           documentId: params.documentId,
         },
       }
