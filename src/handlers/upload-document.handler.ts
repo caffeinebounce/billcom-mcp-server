@@ -24,8 +24,8 @@ export async function uploadDocument(
     const formData = new FormData();
     formData.append("devKey", devKey);
     formData.append("sessionId", sessionId);
+    formData.append("data", JSON.stringify({ fileName: resolvedFileName, isPublic: true }));
     formData.append("file", new Blob([fileBuffer]), resolvedFileName);
-    formData.append("fileName", resolvedFileName);
 
     const response = await fetch(`${baseUrl}/UploadAttachment.json`, {
       method: "POST",
