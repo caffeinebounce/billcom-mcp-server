@@ -18,6 +18,12 @@ import { CreateBillTool } from "./tools/create-bill.tool.js";
 import { UpdateBillTool } from "./tools/update-bill.tool.js";
 import { ArchiveBillTool } from "./tools/archive-bill.tool.js";
 
+// Document tools
+import { ListDocumentsTool } from "./tools/list-documents.tool.js";
+import { GetDocumentTool } from "./tools/get-document.tool.js";
+import { UploadDocumentTool } from "./tools/upload-document.tool.js";
+import { AttachDocumentToBillTool } from "./tools/attach-document-to-bill.tool.js";
+
 // Bill Payment tools
 import { SearchBillPaymentsTool } from "./tools/search-bill-payments.tool.js";
 import { GetBillPaymentTool } from "./tools/get-bill-payment.tool.js";
@@ -91,6 +97,12 @@ const main = async () => {
   RegisterTool(server, CreateBillTool);
   RegisterTool(server, UpdateBillTool);
   RegisterTool(server, ArchiveBillTool);
+
+  // Register Document tools
+  RegisterTool(server, ListDocumentsTool);
+  RegisterTool(server, GetDocumentTool);
+  RegisterTool(server, UploadDocumentTool);
+  RegisterTool(server, AttachDocumentToBillTool);
 
   // Register Bill Payment tools
   RegisterTool(server, SearchBillPaymentsTool);
